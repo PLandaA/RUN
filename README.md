@@ -107,7 +107,8 @@ This repo intentionally excludes licensed content (Asset Store packs and 3D mode
 
 ## Credits
 
-- Gameplay, VR interaction, gesture integration, AI behaviors, and the Unity 6 / XRI 3 migration: **the repository author**. <!-- your name + links -->
+- Game by **AndraLanDev** and **Meme Vega** — gameplay, VR interaction, gesture integration and AI behaviors.
+- Unity 6 / XRI 3 migration and polish: **AndraLanDev**.
 - **$P Point-Cloud Recognizer** by Radu-Daniel Vatavu, Lisa Anthony & Jacob O. Wobbrock (New BSD License), Unity port by [Da Viking Code](http://davikingcode.com) ([GitHub](https://github.com/DaVikingCode/PDollar-Unity)) — included in `Assets/PDollar/`, attribution required by its license.
 - **Music** ©2020 [Joshua McLean](https://joshua-mclean.itch.io) — licensed under [Creative Commons Attribution 4.0 International](https://creativecommons.org/licenses/by/4.0/); included in `Assets/Music/`.
 - VR rig and interaction foundations built following Valem's VR tutorials on YouTube (heavily extended).

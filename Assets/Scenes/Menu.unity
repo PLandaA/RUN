@@ -575,8 +575,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "Credits:\nValem\nContains music \xA92020 Joshua McLean (https://joshua-mclean.itch.io)\nLicensed
-    under Creative Commons Attribution 4.0 International\nDmitrii Kutsenko\nIndie_G\nSimViz"
+  m_Text: "Credits:\nDeveloped by AndraLanDev & Meme Vega\nValem\nContains music
+    \xA92020 Joshua McLean (https://joshua-mclean.itch.io)\nLicensed under Creative
+    Commons Attribution 4.0 International\nDmitrii Kutsenko\nIndie_G\nSimViz"
 --- !u!222 &362714320
 CanvasRenderer:
   m_ObjectHideFlags: 0
