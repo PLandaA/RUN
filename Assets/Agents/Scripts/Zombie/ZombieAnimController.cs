@@ -25,6 +25,11 @@ public class ZombieAnimController : MonoBehaviour
     public float wanderNewPos, attackRange;
     [Tooltip("Seconds the ghoul keeps hunting after losing sight of the player.")]
     public float sightMemorySeconds = 6f;
+    [Tooltip("Movement speed while patrolling (slow, stalking).")]
+    public float patrolSpeed = 1.4f;
+    [Tooltip("Movement speed while actively chasing the player.")]
+    public float chaseSpeed = 3.8f;
+
     public Graph<Vector3> pathFindGraph;
     [HideInInspector] Transform target;
     #endregion
@@ -43,7 +48,7 @@ public class ZombieAnimController : MonoBehaviour
             }
         }
     }
-    private void FixedUpdate()
+private void FixedUpdate()
     {
         // Sight memory keeps the hunt alive briefly after losing the player.
         if (PlayerInVision())
@@ -55,7 +60,30 @@ public class ZombieAnimController : MonoBehaviour
             sightTimer -= Time.fixedDeltaTime;
         }
 
-        animator.SetBool("isSeeking", sightTimer > 0f);
+        bool hunting = sightTimer > 0f;
+        animator.SetBool("isSeeking", hunting);
+
+        // The missing link: nothing ever drove the NavMeshAgent. Now the brain
+        // runs every physics tick — chase the player while hunting, wander otherwise.
+        if (navMeshAgent == null || !navMeshAgent.isOnNavMesh)
+        {
+            return;
+        }
+
+        // Slow, stalking patrol vs. faster chase. Speed switches with the state.
+        navMeshAgent.speed = hunting ? chaseSpeed : patrolSpeed;
+
+        if (hunting)
+        {
+            GameObject player = getPlayerInVision();
+            Vector3 destination = player != null ? player.transform.position
+                                 : (target != null ? target.position : transform.position);
+            Seek(destination);
+        }
+        else
+        {
+            Wander();
+        }
     }
     void Update()
     {
@@ -132,27 +160,51 @@ public class ZombieAnimController : MonoBehaviour
 
         Debug.DrawRay(transform.position, desired_Vel.normalized * 2, Color.magenta);
     }
-    public void Wander()
+public void Wander()
     {
-        Vector3 heading = navMeshAgent != null && navMeshAgent.velocity.sqrMagnitude > 0.01f
-            ? navMeshAgent.velocity.normalized
-            : transform.forward;
-        wheel = (heading * wheelDisplacement) + transform.position;
+        if (navMeshAgent == null || !navMeshAgent.isOnNavMesh) return;
 
-        if (wanderNewPos <= 0 || (transform.position - randPos).magnitude <= 0.5f)
+        // Map-wide patrol: pick a fresh random point on the baked NavMesh and walk to
+        // it; when we arrive (or can't reach it), choose another. This roams the whole
+        // level instead of loitering in a small circle like the old local wander.
+        bool needNewGoal =
+            !navMeshAgent.hasPath ||
+            (!navMeshAgent.pathPending && navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance + 0.5f) ||
+            navMeshAgent.pathStatus == NavMeshPathStatus.PathPartial;
+
+        if (needNewGoal)
         {
-            randPos = new Vector3(Random.Range(-1f, 1f), transform.position.y, Random.Range(-1f, 1f));
-            randPos = randPos.normalized * wheelRadious;
-            randPos += wheel;
-            randPos.y = transform.position.y;
-            test = randPos;
-            wanderNewPos = wanderCooldown;
+            Vector3 goal;
+            if (TryGetRandomNavMeshPoint(out goal))
+            {
+                test = goal; // reuse existing debug gizmo field
+                navMeshAgent.SetDestination(goal);
+            }
         }
-        else
+    }
+
+    // Samples a random point anywhere on the baked NavMesh. Grabs a random NavMesh
+    // triangle vertex as a seed, then snaps to the nearest walkable position.
+    private bool TryGetRandomNavMeshPoint(out Vector3 result)
+    {
+        NavMeshTriangulation tri = NavMesh.CalculateTriangulation();
+        result = transform.position;
+        if (tri.vertices == null || tri.vertices.Length == 0) return false;
+
+        for (int attempt = 0; attempt < 10; attempt++)
         {
-            wanderNewPos -= Time.deltaTime;
+            Vector3 seed = tri.vertices[Random.Range(0, tri.vertices.Length)];
+            if (NavMesh.SamplePosition(seed, out NavMeshHit hit, 2f, NavMesh.AllAreas))
+            {
+                // Prefer a point that isn't right on top of us, so it actually travels.
+                if (Vector3.Distance(hit.position, transform.position) > 3f)
+                {
+                    result = hit.position;
+                    return true;
+                }
+            }
         }
-        Seek(test);
+        return false;
     }
     public void ActivateLeftCollider()
     {

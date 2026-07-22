@@ -25394,6 +25394,11 @@ PrefabInstance:
       propertyPath: m_IsKinematic
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6203453525225872329, guid: f25aea6b32c783a40af4f6fbf99441d8,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6203453525225872330, guid: f25aea6b32c783a40af4f6fbf99441d8,
         type: 3}
       propertyPath: arriveRadious

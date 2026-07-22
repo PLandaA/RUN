@@ -1,0 +1,7 @@
+=== Ghoul Diagnostic ===
+script asset: Assets/Agents/Scripts/Zombie/ZombieAnimController.cs
+agent.enabled=True isOnNavMesh=False speed=3.5 stoppingDistance=0
+NavMesh under ghoul (within 3m): True at (28.33, 0.26, 7.49)
+NavMesh total vertices in scene: 4558
+behaviour: ZombieAnimController enabled=True
+Player tagged object: VR Rig @ (12.56, 0.38, -0.60)

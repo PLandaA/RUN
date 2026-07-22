@@ -2,6 +2,8 @@
 
 **Unity 6 (URP) + XR Interaction Toolkit 3 — with $P gesture recognition**
 
+**[▶ Play it on itch.io](https://andralandev.itch.io/run)**
+
 A single-player VR horror game: trapped in a dark facility, you must find the red key that opens the exit door while a ghoul hunts you through the halls. Your flashlight battery is a resource — and one of the ways to recharge it is drawing a magic gesture in the air with your hand.
 
 This repository showcases the VR interaction and gameplay systems I built: physics-based climbing, gesture-driven mechanics on top of the $P Point-Cloud Recognizer, and a resource-management horror loop. Recently migrated and hardened for **Unity 6 / XR Interaction Toolkit 3.3 / OpenXR**.
